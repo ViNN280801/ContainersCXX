@@ -8,3 +8,4 @@ In this repository will be stored some containers implementation for C++. All co
 
 - Grid
 - Singly Linked List
+- Circular Buffer

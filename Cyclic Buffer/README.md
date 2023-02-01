@@ -64,7 +64,7 @@ valgrind --leak-check=yes -s ./main
 
 or if you want to redirect output to file:
 
-```consolse
+```console
 valgrind --leak-check=yes -s --log-file="<your_file_name>" ./main
 ```
 
