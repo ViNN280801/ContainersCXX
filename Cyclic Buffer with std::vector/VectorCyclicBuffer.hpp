@@ -28,7 +28,6 @@ public:
     auto &getFront() const;
 
     constexpr bool empty() const;
-    constexpr void clear();
 
     constexpr bool try_pushBack(const T &);
     constexpr bool try_pushFront(const T &);

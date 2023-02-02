@@ -57,12 +57,6 @@ constexpr bool VectorCyclicBuffer<T, Allocator>::empty() const
 }
 
 template <typename T, class Allocator>
-constexpr void VectorCyclicBuffer<T, Allocator>::clear()
-{
-    return m_bufData.m_buf.clear();
-}
-
-template <typename T, class Allocator>
 constexpr bool VectorCyclicBuffer<T, Allocator>::try_pushBack(const T &data)
 {
     if (m_bufData.m_pos == m_bufData.m_size)
