@@ -2,12 +2,7 @@
 
 ## Description
 
-This container implemented using STL std::vector for greated reliability, safety and performance. Using [Rule of zero](https://en.cppreference.com/w/cpp/language/rule_of_three)
-
-|
-|
-|
-V
+This container implemented using STL std::vector for greated reliability, safety and performance. Using [Rule of zero](https://en.cppreference.com/w/cpp/language/rule_of_three). Shown below:
 
 ```cpp
 explicit VectorCyclicBuffer(const VectorCyclicBuffer &) = default;
