@@ -3,7 +3,6 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <iterator>
 
 template <typename T, class Allocator = std::allocator<T>>
 class VectorCyclicBuffer
