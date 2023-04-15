@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -fPIC -Wall -Wpedantic -Wextra -shared -Wl,-soname,libdictionary.so.1 -o libdictionary.so.1.0 CMakeFiles/dictionary.dir/dictionary.cpp.o 
