@@ -1,3 +1,0 @@
-/home/vladislavsemykin/Documents/prog/ContainersCXX/Dictionary/CMakeFiles/main.dir
-/home/vladislavsemykin/Documents/prog/ContainersCXX/Dictionary/CMakeFiles/edit_cache.dir
-/home/vladislavsemykin/Documents/prog/ContainersCXX/Dictionary/CMakeFiles/rebuild_cache.dir
