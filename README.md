@@ -10,3 +10,4 @@ In this repository will be stored some containers implementation for C++. All co
 - Singly Linked List
 - Cyclic Buffer (Ring Buffer)
 - Cyclic Buffer (Ring Buffer) implemented with std::vector
+- Binary Tree
