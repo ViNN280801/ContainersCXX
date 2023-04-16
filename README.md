@@ -6,8 +6,10 @@ In this repository will be stored some containers implementation for C++. All co
 
 ## List of containers
 
+- Binary Tree
+- Cyclic Buffer (Ring Buffer) implemented with std::vector
+- Cyclic Buffer (Ring Buffer)
+- Dictionary (TODO)
 - Grid
 - Singly Linked List
-- Cyclic Buffer (Ring Buffer)
-- Cyclic Buffer (Ring Buffer) implemented with std::vector
-- Binary Tree
+
