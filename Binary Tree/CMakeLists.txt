@@ -5,7 +5,7 @@ project(bintree
         DESCRIPTION "This is an implementation of the binary tree"
         LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wpedantic -Wextra")
 
 add_executable(main main.cpp)
