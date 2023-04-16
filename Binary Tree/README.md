@@ -6,7 +6,7 @@ This repository stores implementation of the [binary tree](https://en.wikipedia.
 
 ## Compiling
 
-There is file 'autoconf.sh' that will compiles this project for you automatically. But if you want to do this by yourself, below are presented commands to do that:
+There is file [autoconf.sh](https://github.com/ViNN280801/ContainersCXX/blob/main/Binary%20Tree/autoconf.sh) that will compiles this project for you automatically. But if you want to do this by yourself, below are presented commands to do that:
 
 ### GNU GCC
 
@@ -28,7 +28,7 @@ cmake --build .
 
 ## Dependencies
 
-As you can see in the [Compiling]() section this project is compiled minimum from [C++ 17](https://en.cppreference.com/w/cpp/17) standard version, because this container uses [if constexpr](https://en.cppreference.com/w/cpp/language/if) and [std::is_copy_assignable_v<>](https://en.cppreference.com/w/cpp/types/is_copy_assignable):
+As you can see in the [Compiling](https://github.com/ViNN280801/ContainersCXX/tree/main/Binary%20Tree#compiling) section this project is compiled minimum from [C++ 17](https://en.cppreference.com/w/cpp/17) standard version, because this container uses [if constexpr](https://en.cppreference.com/w/cpp/language/if) and [std::is_copy_assignable_v<>](https://en.cppreference.com/w/cpp/types/is_copy_assignable):
 
 ```cpp
 if ((nodeNumber == 0) or (nodeNumber >= count(root)))
@@ -42,8 +42,8 @@ This example will run tests from the 'main.cpp'
 
 #### View binary tree
 
-[1](img/1.png)
+<img src=img/1.png>
 
 #### Removing node
 
-[2](img/2.png)
+<img src=img/2.png>
