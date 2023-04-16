@@ -3,15 +3,19 @@
 
 #include <algorithm>
 #include <sstream>
+#include <type_traits>
 
 #include "bintree.hpp"
 
-#define GENERATE_ONLY_DIGITS
-
+/*
+ * @brief Struct 'Node' describes node of the binary tree that has two branches
+ * left branch value - value, that lower than node value, right branch value - greater than node value
+ * @tparam T type of value of the node
+ */
 template <typename T, typename Allocator>
 struct BinaryTree<T, Allocator>::Node
 {
-    std::string value{""};
+    T value{""};
 
     // Points on left root of tree
     std::shared_ptr<Node> leftRoot;
@@ -19,7 +23,7 @@ struct BinaryTree<T, Allocator>::Node
     std::shared_ptr<Node> rightRoot;
 
     explicit Node() : leftRoot(nullptr), rightRoot(nullptr) {}
-    explicit Node(const std::string &value) : value(value), leftRoot(nullptr), rightRoot(nullptr) {}
+    explicit Node(const T &value) : value(std::move(value)), leftRoot(nullptr), rightRoot(nullptr) {}
 
     // Returns max depth from two roots
     size_t max() const noexcept
@@ -35,7 +39,7 @@ struct BinaryTree<T, Allocator>::Node
 template <typename T, typename Allocator>
 struct BinaryTree<T, Allocator>::cell_display
 {
-    std::string str{""};
+    std::string str;
     bool flag{false};
 
     // Ctors
@@ -44,46 +48,20 @@ struct BinaryTree<T, Allocator>::cell_display
 };
 
 template <typename T, typename Allocator>
-int BinaryTree<T, Allocator>::counter = 0;
+size_t BinaryTree<T, Allocator>::counter = 0;
 
 template <typename T, typename Allocator>
-std::string BinaryTree<T, Allocator>::generateRandomString(const size_t &length) const
+std::string BinaryTree<T, Allocator>::T_to_str(const T &value) const noexcept
 {
-#ifdef GENERATE_ALL_SYMBOLS
-    static constexpr char symbols[]{"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`1234567890-=~!@#$%^&*()_+[]{}\\|/\'\",.<>:; "};
-#endif
-
-#ifdef GENERATE_ONLY_DIGITS
-    static constexpr char onlyDigits[]{"1234567890"};
-#endif
-    // Declaring variable for store random string inside
-    std::string rndmString{""};
-    // Generating random string
-    for (size_t i{0UL}; i < length; i++)
-    {
-#ifdef GENERATE_ALL_SYMBOLS
-        rndmString += symbols[rand() % (sizeof symbols - 1)];
-#endif
-
-#ifdef GENERATE_ONLY_DIGITS
-        rndmString += onlyDigits[rand() % (sizeof onlyDigits - 1)];
-
-        // To avoid numbers like 03, 045, 00 etc.
-        // At first, convert string to int
-        // then clear string
-        // then convert int to string
-        int rndmNum{std::stoi(rndmString)};
-        rndmString.clear();
-        rndmString = std::to_string(rndmNum);
-#endif
-    }
-    return rndmString;
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
 }
 
 template <typename T, typename Allocator>
 size_t BinaryTree<T, Allocator>::count(std::shared_ptr<BinaryTree<T, Allocator>::Node> node) const
 {
-    return (node == nullptr) ? 0U : (1U + count(node->leftRoot) + count(node->rightRoot));
+    return (node == nullptr) ? 0 : (1U + count(node->leftRoot) + count(node->rightRoot));
 }
 
 template <typename T, typename Allocator>
@@ -101,7 +79,7 @@ std::vector<std::vector<struct BinaryTree<T, Allocator>::cell_display>> BinaryTr
     const size_t maxDepth{root.get()->max()};
 
     rows.resize(maxDepth);
-    size_t depth{0UL};
+    size_t depth{0};
 
     while (true)
     {
@@ -138,7 +116,7 @@ std::vector<std::vector<struct BinaryTree<T, Allocator>::cell_display>> BinaryTr
         }
 
         // Exit loop if this is the root
-        if (depth == 0UL)
+        if (depth == 0)
             break;
 
         travers.pop_back();
@@ -153,14 +131,14 @@ std::vector<std::vector<struct BinaryTree<T, Allocator>::cell_display>> BinaryTr
     The struct also contains a string representation of
     its Node's value, created using a std::stringstream object. */
     std::vector<std::vector<struct cell_display>> rowsDisplay{};
-    std::stringstream ss{};
+    std::stringstream ss;
 
     for (const auto &row : rows)
     {
         rowsDisplay.emplace_back();
         for (const auto &p : row)
         {
-            if ((p not_eq nullptr) and (p->value.size() not_eq 0UL))
+            if (p not_eq nullptr)
             {
                 ss << p->value;
                 rowsDisplay.back().push_back(cell_display(ss.str()));
@@ -179,7 +157,7 @@ std::vector<std::string>
 BinaryTree<T, Allocator>::rowFormat(const std::vector<std::vector<struct cell_display>> &rowsDisplay) const
 {
     // First find the maximum value string length and put it in declared variable in follows line
-    size_t cellWidth{0UL};
+    size_t cellWidth{0};
 
     for (const auto &rowDisplay : rowsDisplay)
     {
@@ -200,9 +178,9 @@ BinaryTree<T, Allocator>::rowFormat(const std::vector<std::vector<struct cell_di
     std::vector<std::string> formattedRows;
     size_t rowCount{rowsDisplay.size()};
     size_t rowElementCount{1UL << (rowCount - 1UL)};
-    size_t leftPad{0UL};
+    size_t leftPad{0};
 
-    for (size_t r{0UL}; r < rowCount; ++r)
+    for (size_t r{0}; r < rowCount; ++r)
     {
         // r reverse-indexes the row
         const auto &cd_row{rowsDisplay.at(rowCount - r - 1UL)};
@@ -213,7 +191,7 @@ BinaryTree<T, Allocator>::rowFormat(const std::vector<std::vector<struct cell_di
         // "row" holds the line of text currently being assembled
         std::string row{""};
         // iterate over each element in this row
-        for (size_t c{0UL}; c < rowElementCount; ++c)
+        for (size_t c{0}; c < rowElementCount; ++c)
         {
             // add padding, more when this is not the leftmost element
             row += std::string(c ? leftPad * 2UL + 1UL : leftPad, ' ');
@@ -254,12 +232,12 @@ BinaryTree<T, Allocator>::rowFormat(const std::vector<std::vector<struct cell_di
         size_t left_space{space + 1UL};
         size_t right_space{space - 1UL};
 
-        for (size_t sr{0UL}; sr < space; ++sr)
+        for (size_t sr{0}; sr < space; ++sr)
         {
             std::string row{};
-            for (size_t c{0UL}; c < rowElementCount; ++c)
+            for (size_t c{0}; c < rowElementCount; ++c)
             {
-                if (c % 2UL == 0UL)
+                if (c % 2UL == 0)
                 {
                     row += std::string(c ? left_space * 2UL + 1UL : left_space, ' ');
                     row += cd_row.at(c).flag ? '/' : ' ';
@@ -308,12 +286,12 @@ void BinaryTree<T, Allocator>::trimRows(std::vector<std::string> &rows)
 
     for (auto &row : rows)
     {
-        row.erase(0UL, minSpace);
+        row.erase(0, minSpace);
     }
 }
 
 template <typename T, typename Allocator>
-std::string BinaryTree<T, Allocator>::transformNumber(const int &num) const noexcept
+std::string BinaryTree<T, Allocator>::transformNumber(int num) const noexcept
 {
     std::string digits{std::to_string(num)};
 
@@ -330,41 +308,31 @@ std::string BinaryTree<T, Allocator>::transformNumber(const int &num) const noex
 }
 
 template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::addNode(const std::string &value, std::shared_ptr<Node> &node)
+void BinaryTree<T, Allocator>::addNode(const T &value, std::shared_ptr<Node> &node)
 {
     if (node == nullptr)
         node = std::make_shared<Node>(value);
     else
     {
-#ifdef GENERATE_ONLY_DIGITS
-        if (std::stoi(value) < std::stoi(node->value))
-#endif
-#ifdef GENERATE_ALL_SYMBOLS
-            if (value < node->value)
-#endif
-            {
-                if (node->leftRoot not_eq nullptr)
-                    addNode(value, node->leftRoot);
-                else
-                    node->leftRoot = std::make_shared<Node>(value);
-            }
-#ifdef GENERATE_ONLY_DIGITS
-            else if (std::stoi(value) >= std::stoi(node->value))
-#endif
-#ifdef GENERATE_ALL_SYMBOLS
-                else if (value >= node->value)
-#endif
-                {
-                    if (node->rightRoot not_eq nullptr)
-                        addNode(value, node->rightRoot);
-                    else
-                        node->rightRoot = std::make_shared<Node>(value);
-                }
+        if (value < node->value)
+        {
+            if (node->leftRoot not_eq nullptr)
+                addNode(value, node->leftRoot);
+            else
+                node->leftRoot = std::make_shared<Node>(value);
+        }
+        else if (value >= node->value)
+        {
+            if (node->rightRoot not_eq nullptr)
+                addNode(value, node->rightRoot);
+            else
+                node->rightRoot = std::make_shared<Node>(value);
+        }
     }
 }
 
 template <typename T, typename Allocator>
-std::shared_ptr<struct BinaryTree<T, Allocator>::Node> BinaryTree<T, Allocator>::certainNode(std::shared_ptr<Node> &node, const int &nodeNumber) const
+std::shared_ptr<struct BinaryTree<T, Allocator>::Node> BinaryTree<T, Allocator>::certainNode(std::shared_ptr<Node> &node, size_t nodeNumber) const
 {
     static std::shared_ptr<Node> pnode;
 
@@ -386,7 +354,7 @@ std::shared_ptr<struct BinaryTree<T, Allocator>::Node> BinaryTree<T, Allocator>:
 
 template <typename T, typename Allocator>
 std::shared_ptr<struct BinaryTree<T, Allocator>::Node>
-BinaryTree<T, Allocator>::certainNode(std::shared_ptr<Node> &node, const std::string &value) const
+BinaryTree<T, Allocator>::certainNode(std::shared_ptr<Node> &node, const T &value) const
 {
     static std::shared_ptr<Node> pnode;
 
@@ -406,12 +374,12 @@ BinaryTree<T, Allocator>::certainNode(std::shared_ptr<Node> &node, const std::st
 
 template <typename T, typename Allocator>
 size_t
-BinaryTree<T, Allocator>::searchNodeNumberByValue(std::shared_ptr<Node> &node, const std::string &value) const
+BinaryTree<T, Allocator>::searchNodeNumberByValue(std::shared_ptr<Node> &node, const T &value) const
 {
-    static size_t nodeNumber{0U};
+    static size_t nodeNumber{};
 
     if (node == nullptr)
-        return 0U;
+        return 0;
     else
     {
         counter++;
@@ -426,9 +394,9 @@ BinaryTree<T, Allocator>::searchNodeNumberByValue(std::shared_ptr<Node> &node, c
 }
 
 template <typename T, typename Allocator>
-size_t BinaryTree<T, Allocator>::branches(std::shared_ptr<Node> &node, const int &nodeNumber) const
+size_t BinaryTree<T, Allocator>::branches(std::shared_ptr<Node> &node, size_t nodeNumber) const
 {
-    size_t countOfBranches{0U};
+    size_t countOfBranches{};
 
     if (counter not_eq 0)
         counter = 0;
@@ -463,17 +431,12 @@ BinaryTree<T, Allocator>::maxValue(std::shared_ptr<Node> &node) const
         return nullptr;
     // Tree is not empty
     else
-    {
-        if (node->rightRoot == nullptr)
-            return node;
-        else
-            return maxValue(node->rightRoot);
-    }
+        return (node->rightRoot == nullptr) ? node : maxValue(node->rightRoot);
 }
 
 template <typename T, typename Allocator>
 std::shared_ptr<struct BinaryTree<T, Allocator>::Node>
-BinaryTree<T, Allocator>::previousNode(std::shared_ptr<Node> &node, const int &nodeNumber)
+BinaryTree<T, Allocator>::previousNode(std::shared_ptr<Node> &node, size_t nodeNumber)
 {
     static std::shared_ptr<Node> pprev;
 
@@ -495,7 +458,7 @@ BinaryTree<T, Allocator>::previousNode(std::shared_ptr<Node> &node, const int &n
 
 template <typename T, typename Allocator>
 std::shared_ptr<struct BinaryTree<T, Allocator>::Node>
-BinaryTree<T, Allocator>::nextNode(std::shared_ptr<Node> &node, const int &nodeNumber)
+BinaryTree<T, Allocator>::nextNode(std::shared_ptr<Node> &node, size_t nodeNumber)
 {
     static std::shared_ptr<Node> pnext;
 
@@ -517,45 +480,28 @@ BinaryTree<T, Allocator>::nextNode(std::shared_ptr<Node> &node, const int &nodeN
 
 template <typename T, typename Allocator>
 std::shared_ptr<struct BinaryTree<T, Allocator>::Node>
-BinaryTree<T, Allocator>::removeNodeByValue(std::shared_ptr<Node> node, const std::string &value)
+BinaryTree<T, Allocator>::removeNodeByValue(std::shared_ptr<Node> node, const T &value)
 {
     // If tree is emplty -> return null
     if (node == nullptr)
         return nullptr;
     else
     {
-#ifdef GENERATE_ONLY_DIGITS
-        // If node value which we want to delete is smaller than the root's value, then it lies in left subtree
-        if (std::stoi(value) < std::stoi(node->value))
-            node->leftRoot = removeNodeByValue(node->leftRoot, value);
-        // If node value which we want to delete is greater than the root's value, then it lies in left subtree
-        else if (std::stoi(value) > std::stoi(node->value))
-            node->rightRoot = removeNodeByValue(node->rightRoot, value);
-#endif
-
-#ifdef GENERATE_ALL_SYMBOLS
         // If node value which we want to delete is smaller than the root's value, then it lies in left subtree
         if (value < node->value)
             node->leftRoot = removeNodeByValue(node->leftRoot, value);
         // If node value which we want to delete is greater than the root's value, then it lies in left subtree
         else if (value > node->value)
             node->rightRoot = removeNodeByValue(node->rightRoot, value);
-#endif
         // If node value equals specified value -> found node which we want to delete
         else
         {
             // Case 1: Node has no child or has only 1 (left) child
             if (node->rightRoot == nullptr)
-            {
-                std::shared_ptr<Node> ptmp{node->leftRoot};
-                return ptmp;
-            }
+                return node->leftRoot;
             // Case 2: Node has no child or has only 1 (right) child
             else if (node->leftRoot == nullptr)
-            {
-                std::shared_ptr<Node> ptmp{node->rightRoot};
-                return ptmp;
-            }
+                return node->rightRoot;
             else
             {
                 // Case 3: Node has 2 children
@@ -571,7 +517,13 @@ BinaryTree<T, Allocator>::removeNodeByValue(std::shared_ptr<Node> node, const st
     return node;
 }
 
-// Ctor with main param (it is also copy ctor)
+template <typename T, typename Allocator>
+BinaryTree<T, Allocator>::BinaryTree(const T &value)
+{
+    root = std::make_shared<Node>(value);
+    root->value = value;
+}
+
 template <typename T, typename Allocator>
 BinaryTree<T, Allocator>::BinaryTree(const BinaryTree *&binary_tree)
 {
@@ -590,7 +542,6 @@ BinaryTree<T, Allocator> &BinaryTree<T, Allocator>::operator=(const BinaryTree *
     return *this;
 }
 
-// Getter for max depth
 template <typename T, typename Allocator>
 inline size_t BinaryTree<T, Allocator>::getMaxDepth() const { return root ? root->max() : 0; }
 
@@ -619,33 +570,10 @@ void BinaryTree<T, Allocator>::show() const
         std::cout << ' ' << row << std::endl;
 }
 
-// Adding node to tree
 template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::addNode(const std::string &value)
+void BinaryTree<T, Allocator>::addNode(const T &value)
 {
     addNode(value, root);
-}
-
-template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::fillRandomData(const size_t &countOfRoots)
-{
-    // Using current time as seed for random generator
-    srand(time(nullptr));
-
-    // Declaring variable, which will contain different strings
-    std::string rndmString{""};
-
-    for (size_t i{0UL}; i < countOfRoots; i++)
-    {
-#ifdef GENERATE_ALL_SYMBOLS
-        rndmString = generateRandomString(static_cast<size_t>(1 + rand() % 2));
-#endif
-
-#ifdef GENERATE_ONLY_DIGITS
-        rndmString = generateRandomString(static_cast<size_t>(1 + rand() % 2));
-#endif
-        addNode(rndmString, root);
-    }
 }
 
 template <typename T, typename Allocator>
@@ -656,63 +584,64 @@ void BinaryTree<T, Allocator>::printCountOfNodes() const
 }
 
 template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::printBranchesOfCertainNode(const int &nodeNumber)
+void BinaryTree<T, Allocator>::printBranchesOfCertainNode(size_t nodeNumber)
 {
     size_t branchesCount{branches(root, nodeNumber)};
 
-    if ((static_cast<size_t>(nodeNumber) == 0) or (static_cast<size_t>(nodeNumber) >= count(root)))
-        branchesCount = 0U;
+    if ((nodeNumber == 0) or (nodeNumber >= count(root)))
+        branchesCount = 0;
 
     std::cout << "Count of branches on node " << nodeNumber << " is " << branchesCount << std::endl;
 }
 
 template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::printValueByNode(const int &nodeNumber)
+void BinaryTree<T, Allocator>::printValueByNode(size_t nodeNumber)
 {
     if (counter not_eq 0)
         counter = 0;
 
     std::shared_ptr<Node> pnode{certainNode(root, nodeNumber)};
-    if ((nodeNumber == 0) or (static_cast<size_t>(nodeNumber) >= count(root)))
-        pnode->value = "empty data";
-    std::cout << "Value of " << transformNumber(nodeNumber) << " node is " << pnode->value << std::endl;
+    if ((nodeNumber == 0) or (nodeNumber >= count(root)))
+        if constexpr (std::is_copy_assignable_v<T>)
+            pnode->value = T{};
+    std::cout << "Value of " << transformNumber(nodeNumber) << " node is " << T_to_str(pnode->value) << std::endl;
 }
 
 template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::printNodeNumberByValue(const std::string &value)
+void BinaryTree<T, Allocator>::printNodeNumberByValue(const T &value)
 {
     if (counter not_eq 0)
         counter = 0;
 
     size_t nodeNumber{searchNodeNumberByValue(root, value)};
     if (nodeNumber == 0)
-        std::cout << "The binary tree does not contain value " << value << std::endl;
+        std::cout << "The binary tree does not contain value " << T_to_str(value) << std::endl;
     else
-        std::cout << "The value \"" << value << "\" is in " << transformNumber(nodeNumber) << " node " << std::endl;
+        std::cout << "The value \"" << T_to_str(value) << "\" is in " << transformNumber(nodeNumber) << " node " << std::endl;
 }
 
 template <typename T, typename Allocator>
 void BinaryTree<T, Allocator>::searchMin()
 {
     std::shared_ptr<Node> pnode{minValue(root)};
-    std::cout << "Min value = " << pnode->value << std::endl;
+    std::cout << "Min value = " << T_to_str(pnode->value) << std::endl;
 }
 
 template <typename T, typename Allocator>
 void BinaryTree<T, Allocator>::searchMax()
 {
     std::shared_ptr<Node> pnode = maxValue(root);
-    std::cout << "Max value = " << pnode->value << std::endl;
+    std::cout << "Max value = " << T_to_str(pnode->value) << std::endl;
 }
 
 template <typename T, typename Allocator>
-void BinaryTree<T, Allocator>::removeNode(const std::string &value)
+void BinaryTree<T, Allocator>::removeNode(const T &value)
 {
     if (counter not_eq 0)
         counter = 0;
 
-    if ((root == nullptr) or (root->value.size() == 0UL))
-        std::cout << "There is no value " << value << std::endl;
+    if (root == nullptr)
+        std::cout << "There is no value " << T_to_str(value) << std::endl;
     else
         removeNodeByValue(root, value);
 }

@@ -23,18 +23,15 @@ private:
     std::shared_ptr<Node> root;
 
     /// For multiple use 'certainNode(void)' method
-    static int counter;
+    static size_t counter;
 
 protected:
     /*
-     * Generating random std::string and returns it
-     * Hint: You must declare at the top following line:
-     * #define GENERATE_ALL_SYMBOLS to generate std::string consisting of all symbols
-     * or
-     * #define GENERATE_ONLY_DIGITS to generate std::string consisting of only digits
-     * @param length used for length of generated string
+     * @brief Converts 'T' type to a string
+     * @tparam value value to convert
+     * @returns 'value' in a string representation
      */
-    std::string generateRandomString(const size_t &length) const;
+    std::string T_to_str(const T &value) const noexcept;
 
     /*
      * @param node node from which to start count
@@ -77,17 +74,17 @@ protected:
     /*
      * @brief Turns int number to std::string for splitting on digits for check -st, -nd,
      * -rd and -th postfixes of digits
-     * @param num ref to const int variable
+     * @param num number that will transformed to a string with postfix
      * @returns Number with literal postfix such as -st, -nd, etc.
      */
-    std::string transformNumber(const int &num) const noexcept;
+    std::string transformNumber(int num) const noexcept;
 
     /*
      * @brief Adding node to the binary tree
-     * @param value ref to const string variable
+     * @tparam value which will be added to the node
      * @param node pointer to 'Node' struct
      */
-    virtual void addNode(const std::string &value, std::shared_ptr<Node> &node);
+    virtual void addNode(const T &value, std::shared_ptr<Node> &node);
 
     /*
      * @brief Helper method that returns certain node by it's number
@@ -95,23 +92,23 @@ protected:
      * @param nodeNumber node number by which search will take place
      * @returns Certain node by node number
      */
-    std::shared_ptr<Node> certainNode(std::shared_ptr<Node> &node, const int &nodeNumber) const;
+    std::shared_ptr<Node> certainNode(std::shared_ptr<Node> &node, size_t nodeNumber) const;
 
     /*
      * @brief Helper method that returns certain node by it's value
      * @param node pointer to 'Node' struct
-     * @param value value of binary tree by which search will take place
+     * @tparam value value of binary tree by which search will take place
      * @returns Node if value exists in this binary tree
      */
-    std::shared_ptr<Node> certainNode(std::shared_ptr<Node> &node, const std::string &value) const;
+    std::shared_ptr<Node> certainNode(std::shared_ptr<Node> &node, const T &value) const;
 
     /*
      * @brief Helper method that returns node number by it's value
      * @param node pointer to 'Node' struct
-     * @param value value of binary tree by which search will take place
+     * @tparam value value of binary tree by which search will take place
      * @returns Number of node if value exists in this binary tree
      */
-    size_t searchNodeNumberByValue(std::shared_ptr<Node> &node, const std::string &value) const;
+    size_t searchNodeNumberByValue(std::shared_ptr<Node> &node, const T &value) const;
 
     /*
      * @brief Helper method
@@ -119,7 +116,7 @@ protected:
      * @param nodeNumber node number by which counting of branches will take place
      * @returns Count of branches of certain node
      */
-    size_t branches(std::shared_ptr<Node> &node, const int &nodeNumber) const;
+    size_t branches(std::shared_ptr<Node> &node, size_t nodeNumber) const;
 
     /*
      * @brief Helper method (Non-recursive function)
@@ -142,7 +139,7 @@ protected:
      * @param nodeNumber node number as a pivot
      * @returns Previous node by node number
      */
-    static std::shared_ptr<Node> previousNode(std::shared_ptr<Node> &node, const int &nodeNumber);
+    static std::shared_ptr<Node> previousNode(std::shared_ptr<Node> &node, size_t nodeNumber);
 
     /*
      * @brief Helper method to find the next node with specified node number
@@ -150,19 +147,25 @@ protected:
      * @param nodeNumber node number as a pivot
      * @returns Next node by node number
      */
-    static std::shared_ptr<Node> nextNode(std::shared_ptr<Node> &node, const int &nodeNumber);
+    static std::shared_ptr<Node> nextNode(std::shared_ptr<Node> &node, size_t nodeNumber);
 
     /*
      * @brief Helper method that removes node from binary tree by value
      * @param node pointer to 'Node' struct
-     * @param value value of the node which you want to erase from the binary tree
+     * @tparam value value of the node which you want to erase from the binary tree
      * @returns Node which you want to delete
      */
-    std::shared_ptr<Node> removeNodeByValue(std::shared_ptr<Node> node, const std::string &value);
+    std::shared_ptr<Node> removeNodeByValue(std::shared_ptr<Node> node, const T &value);
 
 public:
     /// Zero-argument, default ctor
-    explicit BinaryTree(void) : root(nullptr) {}
+    explicit BinaryTree(void) = default;
+
+    /*
+     * @brief Default ctor with 1 template parameter
+     * @tparam value value which will initialize the binary tree (head node value)
+     */
+    explicit BinaryTree(const T &value);
 
     /// Ctor with main param (it is also copy ctor)
     explicit BinaryTree(const BinaryTree *&);
@@ -178,15 +181,9 @@ public:
 
     /*
      * @brief Adding node to the tree binary tree
-     * @param value string which you want to add into the binary tree
+     * @tparam value value which you want to add into the binary tree
      */
-    virtual void addNode(const std::string &value) final;
-
-    /*
-     * @brief Filling binary tree with random data
-     * @param countOfRoots count of roots which you want to add
-     */
-    void fillRandomData(const size_t &countOfRoots);
+    virtual void addNode(const T &value) final;
 
     /// Printing count of nodes
     void printCountOfNodes(void) const;
@@ -195,19 +192,19 @@ public:
      * @brief Printing branches of certain node (keep in mind that the countdown starts from 0)
      * @param nodeNumber node number from which will start printing
      */
-    void printBranchesOfCertainNode(const int &nodeNumber);
+    void printBranchesOfCertainNode(size_t nodeNumber);
 
     /*
      * @brief Printing value of certain node. Searching by node number
      * @param nodeNumber node number that specifes some value
      */
-    void printValueByNode(const int &nodeNumber);
+    void printValueByNode(size_t nodeNumber);
 
     /*
      * @brief Printing node number which found by searching by value
-     * @param value value to search node number
+     * @tparam value value to search node number
      */
-    void printNodeNumberByValue(const std::string &value);
+    void printNodeNumberByValue(const T &value);
 
     /// Printing min value from binary tree
     void searchMin(void);
@@ -217,9 +214,9 @@ public:
 
     /*
      * @brief Removes element in binary tree by value
-     * @param value value of the node which you want to remove
+     * @tparam value value of the node which you want to remove
      */
-    void removeNode(const std::string &value);
+    void removeNode(const T &value);
 
     /// Virtual dtor
     virtual ~BinaryTree(void) = default;
