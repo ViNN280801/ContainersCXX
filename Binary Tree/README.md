@@ -11,9 +11,9 @@ There is file [autoconf.sh](https://github.com/ViNN280801/ContainersCXX/blob/mai
 ### GNU GCC
 
 ```console
-gcc -g -c bintree.cpp -lstdc++ -std=c++23 -Wall -Wpedantic -Wextra -o bintree.o
-gcc -g -c main.cpp -lstdc++ -std=c++23 -Wall -Wpedantic -Wextra -o main.o
-gcc main.o bintree.o -lstdc++ -std=c++23 -o main
+gcc -g -c bintree.cpp -lstdc++ -std=c++17 -Wall -Wpedantic -Wextra -o bintree.o
+gcc -g -c main.cpp -lstdc++ -std=c++17 -Wall -Wpedantic -Wextra -o main.o
+gcc main.o bintree.o -lstdc++ -std=c++17 -o main
 rm bintree.o main.o
 ./main
 ```
@@ -28,12 +28,16 @@ cmake --build .
 
 ## Dependencies
 
-As you can see in the [Compiling](https://github.com/ViNN280801/ContainersCXX/tree/main/Binary%20Tree#compiling) section this project is compiled minimum from [C++ 17](https://en.cppreference.com/w/cpp/17) standard version, because this container uses [if constexpr](https://en.cppreference.com/w/cpp/language/if) and [std::is_copy_assignable_v<>](https://en.cppreference.com/w/cpp/types/is_copy_assignable):
+As you can see in the [Compiling](https://github.com/ViNN280801/ContainersCXX/tree/main/Binary%20Tree#compiling) section this project is compiled minimum from [C++ 17](https://en.cppreference.com/w/cpp/17) standard version, because this container uses [std::is_copy_assignable_v<>](https://en.cppreference.com/w/cpp/types/is_copy_assignable):
 
 ```cpp
-if ((nodeNumber == 0) or (nodeNumber >= count(root)))
-        if constexpr (std::is_copy_assignable_v<T>)
-            pnode->value = T{};
+template <typename T, typename Allocator = std::allocator<T>>
+class BinaryTree
+{
+    static_assert(std::is_copy_assignable<T>::value && is_comparable_v<T>,
+                  "Type have to be copyable and assignable.");
+...
+}
 ```
 
 ## Example
@@ -47,3 +51,7 @@ This example will run tests from the 'main.cpp'
 #### Removing node
 
 <img src=img/2.png>
+
+#### Testing with string binary tree
+
+<img src=img/3.png>
