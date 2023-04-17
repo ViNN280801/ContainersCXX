@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <sstream>
-#include <type_traits>
 
 #include "bintree.hpp"
 
@@ -23,7 +22,7 @@ struct BinaryTree<T, Allocator>::Node
     std::shared_ptr<Node> rightRoot;
 
     explicit Node() : leftRoot(nullptr), rightRoot(nullptr) {}
-    explicit Node(const T &value) : value(std::move(value)), leftRoot(nullptr), rightRoot(nullptr) {}
+    explicit Node(const T &newValue) : value(std::move(newValue)), leftRoot(nullptr), rightRoot(nullptr) {}
 
     // Returns max depth from two roots
     size_t max() const noexcept
@@ -577,6 +576,14 @@ void BinaryTree<T, Allocator>::addNode(const T &value)
 }
 
 template <typename T, typename Allocator>
+template <typename... Args>
+void BinaryTree<T, Allocator>::addNodes(const T &value, Args &...args)
+{
+    addNode(value, root);
+    (addNode(args, root), ...);
+}
+
+template <typename T, typename Allocator>
 void BinaryTree<T, Allocator>::printCountOfNodes() const
 {
     size_t nodes{count(root)};
@@ -602,8 +609,7 @@ void BinaryTree<T, Allocator>::printValueByNode(size_t nodeNumber)
 
     std::shared_ptr<Node> pnode{certainNode(root, nodeNumber)};
     if ((nodeNumber == 0) or (nodeNumber >= count(root)))
-        if constexpr (std::is_copy_assignable_v<T>)
-            pnode->value = T{};
+        pnode->value = T{};
     std::cout << "Value of " << transformNumber(nodeNumber) << " node is " << T_to_str(pnode->value) << std::endl;
 }
 
