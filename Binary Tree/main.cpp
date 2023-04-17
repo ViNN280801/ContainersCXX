@@ -5,7 +5,7 @@
 
 int main()
 {
-    BinaryTree<int> bin_tree(59);
+    BinaryTree<int> bin_tree;
     std::cout << "Customly created binary tree: " << std::endl;
 
     bin_tree.addNode(9);
@@ -35,6 +35,19 @@ int main()
 
     std::cout << "\nBinary tree after removing " << toRemove << ": " << std::endl;
     bin_tree.show();
+
+    BinaryTree<std::string> bin_tree_str;
+    std::cout << "Customly created binary tree: " << std::endl;
+
+    bin_tree_str.addNodes("i", "b", "jk", "asda", "gh", "ri");
+
+    bin_tree_str.show();
+    bin_tree_str.printCountOfNodes();
+    bin_tree_str.printBranchesOfCertainNode(1);
+    bin_tree_str.printValueByNode(1);
+    bin_tree_str.printNodeNumberByValue("gh");
+    bin_tree_str.searchMin();
+    bin_tree_str.searchMax();
 
     return EXIT_SUCCESS;
 }
