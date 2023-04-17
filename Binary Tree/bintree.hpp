@@ -4,6 +4,79 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <type_traits>
+
+/*
+ * @brief This namespace is created for checking of template types
+ * of availability operators ==, < and >
+ */
+namespace checkOperatorsAvailability
+{
+    struct No
+    {
+    };
+
+    template <typename T, typename Arg>
+    No operator==(const T &, const Arg &);
+
+    template <typename T, typename Arg>
+    No operator<(const T &, const Arg &);
+
+    template <typename T, typename Arg>
+    No operator>(const T &, const Arg &);
+
+    /*
+     * @brief Describes property of template parameter 'T' that it can be compared with operator== (equals - eq)
+     */
+    template <typename T, typename Arg = T>
+    struct has_eq_operator
+    {
+        enum
+        {
+            value = !std::is_same<decltype(std::declval<T>() == std::declval<Arg>()), No>::value
+        };
+    };
+
+    /*
+     * @brief Describes property of template parameter 'T' that it can be compared with operator< (lower than - lt)
+     */
+    template <typename T, typename Arg = T>
+    struct has_lt_operator
+    {
+        enum
+        {
+            value = !std::is_same<decltype(std::declval<T>() < std::declval<Arg>()), No>::value
+        };
+    };
+
+    /*
+     * @brief Describes property of template parameter 'T' that it can be compared with operator> (greater than - gt)
+     */
+    template <typename T, typename Arg = T>
+    struct has_gt_operator
+    {
+        enum
+        {
+            value = !std::is_same<decltype(std::declval<T>() > std::declval<Arg>()), No>::value
+        };
+    };
+}
+
+/* Helper variable templates */
+template <typename T>
+inline constexpr bool has_eq_operator_v = checkOperatorsAvailability::has_eq_operator<T>::value;
+
+template <typename T>
+inline constexpr bool has_lt_operator_v = checkOperatorsAvailability::has_lt_operator<T>::value;
+
+template <typename T>
+inline constexpr bool has_gt_operator_v = checkOperatorsAvailability::has_gt_operator<T>::value;
+
+template <typename T>
+inline constexpr bool is_comparable_v = checkOperatorsAvailability::has_eq_operator<T>::value &&
+                                        checkOperatorsAvailability::has_lt_operator<T>::value &&
+                                        checkOperatorsAvailability::has_gt_operator<T>::value;
+/* End of helper variable templates */
 
 /*
  * @brief This is an implementation of the binary tree container
@@ -15,6 +88,9 @@
 template <typename T, typename Allocator = std::allocator<T>>
 class BinaryTree
 {
+    static_assert(std::is_copy_assignable<T>::value && is_comparable_v<T>,
+                  "Type have to be copyable and assignable.");
+
 private:
     /// Node of the binary tree with hidden implementation, represents a structure of data
     struct Node;
@@ -184,6 +260,14 @@ public:
      * @tparam value value which you want to add into the binary tree
      */
     virtual void addNode(const T &value) final;
+
+    /*
+     * @brief Adding multiple nodes to the tree binary tree
+     * @tparam value value which you want to add into the binary tree
+     * @tparam args rest values (have to be same type -> verification is built in this method)
+     */
+    template <typename... Args>
+    void addNodes(const T &value, Args &...args);
 
     /// Printing count of nodes
     void printCountOfNodes(void) const;
