@@ -44,12 +44,6 @@ private:
     /// @param node pointer to 'Node' struct
     virtual constexpr void addNode(Key const &key, std::shared_ptr<Node> &node);
 
-    /// @brief Helper method that returns certain node by it's number
-    /// @param node pointer to 'Node' struct
-    /// @param nodeNumber node number by which search will take place
-    /// @return Certain node by node number
-    std::shared_ptr<Node> certainNode(std::shared_ptr<Node> &node, size_t nodeNumber) const;
-
     /// @brief Helper method that returns certain node by it's value
     /// @param node pointer to 'Node' struct
     /// @tparam key value of binary tree by which search will take place
@@ -141,7 +135,7 @@ public:
     /// @tparam key key of element that you want to find
     /// @return Value associated with 'key' parameter
     /// If there is no specified key in the container
-    /// returns standard null value for 'Value' type
+    /// returns standard null value for 'Value' type (works like an "operator[]")
     virtual const Value &get(Key const &key) const override;
 
     /// @brief Gets a value in dictionary by specified key
@@ -156,9 +150,27 @@ public:
     virtual constexpr void set(Key const &key, const Value &value) override;
 
     /// @brief Checks if 'key' stores any element
-    /// @param key key which is being checked on availavility of value
+    /// @tparam key key which is being checked on availavility of value
     /// @return "true" if 'key' is associated with some value, otherwise - "false"
     virtual constexpr bool is_set(Key const &key) const override;
+
+    /// @brief Inserting new element to the container
+    /// @tparam key key to which will be inserted value
+    /// @tparam value value to insert
+    constexpr void insert(Key const &key, Value const &value);
+
+    /// @brief Erases node by it key, if container is empty or there
+    /// is no node with specified key - calling "return;"
+    /// @tparam key key to search to erase node
+    constexpr void erase(Key const &key);
+
+    /// @brief Getter for min value
+    /// @return Min value from container
+    constexpr Value &min() const;
+
+    /// @brief Getter for max value
+    /// @return Max value from container
+    constexpr Value &max() const;
 };
 
 #endif // DICTIONARY_HPP

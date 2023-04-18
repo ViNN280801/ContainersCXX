@@ -86,28 +86,6 @@ Dictionary<Key, Value, Allocator>::addNode(Key const &key, std::shared_ptr<Node>
 
 template <typename Key, typename Value, typename Allocator>
 std::shared_ptr<struct Dictionary<Key, Value, Allocator>::Node>
-Dictionary<Key, Value, Allocator>::certainNode(std::shared_ptr<Node> &node, size_t nodeNumber) const
-{
-    static std::shared_ptr<Node> pnode;
-
-    if (node == nullptr)
-        return nullptr;
-    else
-    {
-        counter++;
-
-        if (counter == nodeNumber)
-            pnode = node;
-
-        certainNode(node->m_leftRoot, nodeNumber);
-        certainNode(node->m_rightRoot, nodeNumber);
-
-        return pnode;
-    }
-}
-
-template <typename Key, typename Value, typename Allocator>
-std::shared_ptr<struct Dictionary<Key, Value, Allocator>::Node>
 Dictionary<Key, Value, Allocator>::certainNode(std::shared_ptr<Node> &node, Key const &key) const
 {
     static std::shared_ptr<Node> pnode;
@@ -122,7 +100,7 @@ Dictionary<Key, Value, Allocator>::certainNode(std::shared_ptr<Node> &node, Key 
         certainNode(node->m_leftRoot, key);
         certainNode(node->m_rightRoot, key);
 
-        return (key == node->m_data.first) ? pnode : nullptr;
+        return pnode;
     }
 }
 
@@ -315,7 +293,7 @@ Dictionary<Key, Value, Allocator>::get(Key const &key) const
     Value null{Value()};
 
     // Searching necessary value by key with the helper method
-    return ptmp ? ptmp->m_data.second : null;
+    return ptmp->m_data.first == key ? ptmp->m_data.second : null;
 }
 
 template <typename Key, typename Value, typename Allocator>
@@ -352,6 +330,44 @@ Dictionary<Key, Value, Allocator>::is_set(Key const &key) const
     // If 'ptmp' stores "nullptr" (if there is no such node with specified key)
     // - returns false, otherwise - true
     return !ptmp;
+}
+
+template <typename Key, typename Value, typename Allocator>
+constexpr void
+Dictionary<Key, Value, Allocator>::insert(Key const &key, Value const &value)
+{
+    addNode(key);
+    std::shared_ptr<Node> pnode{m_root}, ptmp{certainNode(m_root, key)};
+    ptmp->m_data.second = value;
+}
+
+template <typename Key, typename Value, typename Allocator>
+constexpr void
+Dictionary<Key, Value, Allocator>::erase(Key const &key)
+{
+    removeNode(key);
+}
+
+template <typename Key, typename Value, typename Allocator>
+constexpr Value &
+Dictionary<Key, Value, Allocator>::min() const
+{
+    // Making a copy of the root
+    std::shared_ptr<Node> pnode{m_root}, ptmp{minValue(pnode)};
+    if (!ptmp)
+        throw std::out_of_range("Exception: std::out_of_range: Container is empty!");
+    return ptmp->m_data.second;
+}
+
+template <typename Key, typename Value, typename Allocator>
+constexpr Value &
+Dictionary<Key, Value, Allocator>::max() const
+{
+    // Making a copy of the root
+    std::shared_ptr<Node> pnode{m_root}, ptmp{maxValue(pnode)};
+    if (!ptmp)
+        throw std::out_of_range("Exception: std::out_of_range: Container is empty!");
+    return ptmp->m_data.second;
 }
 
 #endif // DICTIONARY_IMPL_HPP
