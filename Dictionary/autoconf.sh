@@ -3,9 +3,9 @@
 echo "Do you want to use GNU GCC (1) or CMake (2). Exit (#): "
 while read choice; do
     if [[ "$choice" == "1" ]]; then
-        gcc -g -c dictionary.cpp -lstdc++ -std=c++23 -Wall -Wpedantic -Wextra -o dict.o
+        gcc -g -c src/dictionary.cpp -lstdc++ -std=c++23 -Wall -Wpedantic -Wextra -o dict.o
         gcc -g -c main.cpp -lstdc++ -std=c++23 -Wall -Wpedantic -Wextra -o main.o
-        gcc main.o dict.o -lstdc++ -std=c++23 -o main
+        gcc dict.o main.o -lstdc++ -std=c++23 -o main
         rm dict.o main.o
         ./main
         break
