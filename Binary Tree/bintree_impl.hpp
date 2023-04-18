@@ -649,7 +649,7 @@ void BinaryTree<T, Allocator>::removeNode(const T &value)
     if (root == nullptr)
         std::cout << "There is no value " << T_to_str(value) << std::endl;
     else
-        removeNodeByValue(root, value);
+        root = removeNodeByValue(root, value);
 }
 
 #endif // BINTREE_IMPL_HPP
