@@ -285,30 +285,31 @@ template <typename Key, typename Value, typename Allocator>
 const Value &
 Dictionary<Key, Value, Allocator>::get(Key const &key) const
 {
-    // Making a copy of the root
-    std::shared_ptr<Node> pnode{m_root}, ptmp{certainNode(pnode, key)};
+    // Move 'm_root' content to a new variable
+    std::shared_ptr<Node> pnode{std::move(m_root)};
+    pnode = certainNode(pnode, key);
 
     // Initialize empty value to return it if method 'certainNode()' returns "nullptr"
     // as result of searching node with specified key
     Value null{Value()};
 
     // Searching necessary value by key with the helper method
-    return ptmp->m_data.first == key ? ptmp->m_data.second : null;
+    return pnode->m_data.first == key ? pnode->m_data.second : null;
 }
 
 template <typename Key, typename Value, typename Allocator>
 const Value &
 Dictionary<Key, Value, Allocator>::at(Key const &key) const
 {
-    // Making a copy of the root
-    std::shared_ptr<Node> pnode{m_root}, ptmp{certainNode(pnode, key)};
+    std::shared_ptr<Node> pnode{std::move(m_root)};
+    pnode = certainNode(pnode, key);
 
     // If helper method 'certainNode()' returns "nullptr" -> throw an exception
-    if (!ptmp)
+    if (!pnode)
         throw std::out_of_range("Exception: std::out_of_range: Container does not contains specified key");
 
     // Searching necessary value by key with the helper method
-    return ptmp->m_data.second;
+    return pnode->m_data.second;
 }
 
 template <typename Key, typename Value, typename Allocator>
@@ -325,11 +326,11 @@ template <typename Key, typename Value, typename Allocator>
 constexpr bool
 Dictionary<Key, Value, Allocator>::is_set(Key const &key) const
 {
-    // Making a copy of the root
-    std::shared_ptr<Node> pnode{m_root}, ptmp{certainNode(pnode, key)};
-    // If 'ptmp' stores "nullptr" (if there is no such node with specified key)
+    std::shared_ptr<Node> pnode{std::move(m_root)};
+    pnode = certainNode(pnode, key);
+    // If 'pnode' stores "nullptr" (if there is no such node with specified key)
     // - returns false, otherwise - true
-    return !ptmp;
+    return !pnode;
 }
 
 template <typename Key, typename Value, typename Allocator>
@@ -352,22 +353,22 @@ template <typename Key, typename Value, typename Allocator>
 constexpr Value &
 Dictionary<Key, Value, Allocator>::min() const
 {
-    // Making a copy of the root
-    std::shared_ptr<Node> pnode{m_root}, ptmp{minValue(pnode)};
-    if (!ptmp)
+    std::shared_ptr<Node> pnode{std::move(m_root)};
+    pnode = minValue(pnode);
+    if (!pnode)
         throw std::out_of_range("Exception: std::out_of_range: Container is empty!");
-    return ptmp->m_data.second;
+    return pnode->m_data.second;
 }
 
 template <typename Key, typename Value, typename Allocator>
 constexpr Value &
 Dictionary<Key, Value, Allocator>::max() const
 {
-    // Making a copy of the root
-    std::shared_ptr<Node> pnode{m_root}, ptmp{maxValue(pnode)};
-    if (!ptmp)
+    std::shared_ptr<Node> pnode{std::move(m_root)};
+    pnode = maxValue(pnode);
+    if (!pnode)
         throw std::out_of_range("Exception: std::out_of_range: Container is empty!");
-    return ptmp->m_data.second;
+    return pnode->m_data.second;
 }
 
 #endif // DICTIONARY_IMPL_HPP
