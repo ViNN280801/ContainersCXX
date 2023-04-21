@@ -37,10 +37,10 @@ constexpr size_t size() const;
 // Returns "true" if empty, ohterwise - "false"
 constexpr bool empty() const;
 
-// ReturnsErasing all elements from the container
+// Erasing all elements from the container
 void clear() noexcept;
 
-// ReturnsThrows an exception if there is no such key
+// Throws an exception if there is no such key
 // Returns Key of root (head) node if exists
 virtual Key const &get_key() const noexcept override;
 
@@ -52,7 +52,7 @@ virtual Key const &get_key() const noexcept override;
 virtual const Value &get(Key const &key) const override;
 
 // Gets a value in dictionary by specified key
-// @throw Exception "std::out_of_range" if there is no key in the container
+// Throws exception "std::out_of_range" if there is no key in the container
 // Template parameter key - key of element that you want to find
 // Returns Value associated with 'key' parameter
 const Value &at(Key const &key) const;
@@ -72,7 +72,7 @@ virtual constexpr bool is_set(Key const &key) const override;
 // Template parameter value - value to insert
 constexpr void insert(Key const &key, Value const &value);
 
-// ReturnsErases node by it key, if container is empty or there
+// Erases node by it key, if container is empty or there
 // is no node with specified key - calling "return;"
 // Template parameter key - key to search to erase node
 constexpr void erase(Key const &key);
