@@ -37,14 +37,14 @@ private:
 
 protected:
     // Copying data from object to current object
-    inline void copy(const List<T> &__list)
+    void copy(const List<T> &__list)
     {
         pHead = __list->pHead;
         m_size = __list->m_size;
     }
 
     // Zeroing out data from passed object
-    inline void clear(const List<T> &__list)
+    void clear(List<T> &__list)
     {
         // Deallocating memory from head of the list
         delete __list->pHead;
@@ -145,10 +145,10 @@ public:
     }
 
     // Virtual default destructor
-    virtual ~List<T>() { clear(); }
+    virtual ~List() { clear(); }
 
     // Returns size of list
-    inline size_t size() const { return m_size; }
+    size_t size() const { return m_size; }
 
     // Adding element to end of the singly linked list
     void push_back(const T &__data);
