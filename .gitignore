@@ -1,0 +1,8 @@
+main
+output/
+.vscode/
+build/
+*.o
+*.out
+*log*
+*.pdf
